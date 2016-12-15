@@ -1,0 +1,25 @@
+{
+  "name": "gulpjs6react",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jean-Pierre Sierens",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-preset-es2015": "6.3.13",
+    "babel-preset-react": "6.3.13",
+    "babelify": "7.2.0",
+    "browser-sync": "^2.18.5",
+    "browserify": "^13.1.1",
+    "gulp": "3.9.1",
+    "gulp-util": "3.0.7",
+    "vinyl-source-stream": "1.1.0"
+  },
+  "dependencies": {
+    "react": "^15.4.1",
+    "react-dom": "^1.1.1"
+  }
+}
