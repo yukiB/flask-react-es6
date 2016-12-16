@@ -6,12 +6,27 @@ import CommentForm from './CommentForm'
 export default class CommentBox extends React.Component {
     constructor(props) {
         super(props)
+        this.loadCommentsFromServer.bind(this)
         this.state = {
             data: []
         };
     }
 
-    componentDidMount() {
+     handleCommentSubmit(comment) {
+        request
+            .post(this.props.url)
+            .query(comment)
+            .end(function(err, res){
+                if (err)
+                    console.error(this.props.url, status, err.toString());
+                else{
+                    let data = JSON.parse(res.text)
+                    this.setState({data: data['data']})
+                }
+            }.bind(this))  
+  }
+
+    loadCommentsFromServer() {
         request
             .get(this.props.url)
             .query({})
@@ -22,7 +37,11 @@ export default class CommentBox extends React.Component {
                     let data = JSON.parse(res.text)
                     this.setState({data: data['data']})
                 }
-            }.bind(this))
+            }.bind(this))        
+    }
+
+    componentDidMount() {
+        this.loadCommentsFromServer();
     }
 
     render() {
@@ -30,7 +49,7 @@ export default class CommentBox extends React.Component {
                 <div className='commentBox'>
                 <h2>Comments</h2>
                 <CommentList data={this.state.data} />
-                <CommentForm />
+                <CommentForm onCommentSubmit={this.handleCommentSubmit.bind(this)} />
                 </div>
         );
     }
