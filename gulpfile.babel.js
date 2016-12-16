@@ -1,39 +1,37 @@
-var gulp = require('gulp');
-var browserify = require('browserify');
-var source = require('vinyl-source-stream');
-var gutil = require('gulp-util');
-var babelify = require('babelify');
-var browserSync = require('browser-sync');
+import gulp from 'gulp'
+import browserify from 'browserify'
+import source from 'vinyl-source-stream'
+import gutil from 'gulp-util'
+import babelify from 'babelify'
+import browserSync from 'browser-sync'
 
-var dependencies = [
+const dependencies = [
 	'react',
   	'react-dom'
 ];
-var scriptsCount = 0;
+let scriptsCount = 0;
 
-gulp.task('browser-sync', function() {
+gulp.task('browser-sync', () =>
   browserSync({
     proxy: {
       target: 'http://localhost:5000'
     },
-    port: 8080
-  });
-});
+    port: 5001
+  }))
 
-gulp.task('scripts', function () {
-    bundleApp(false);
-});
+gulp.task('scripts', () =>
+    bundleApp(false))
 
-gulp.task('deploy', function (){
-	bundleApp(true);
-});
+gulp.task('deploy', () =>
+	bundleApp(true))
 
-gulp.task('watch', function () {
+gulp.task('watch',  () => {
 	gulp.watch(['./app/*.js'], ['scripts']);
+	gulp.watch(['./app/components/*.js'], ['scripts']);
 	gulp.watch(['./templates/*.html'], ['scripts']);
 });
 
-gulp.task('default', ['scripts','watch', 'browser-sync']);
+gulp.task('default', ['scripts', 'watch', 'browser-sync']);
 
 function bundleApp(isProduction) {
 	scriptsCount++;
