@@ -4,6 +4,11 @@ import source from 'vinyl-source-stream'
 import gutil from 'gulp-util'
 import babelify from 'babelify'
 import browserSync from 'browser-sync'
+import plumber from 'gulp-plumber'
+import sass from 'gulp-sass'
+import postcss from 'gulp-postcss'
+import cssnext from 'postcss-cssnext'
+import sourcemaps from 'gulp-sourcemaps'
 
 const dependencies = [
 	'react',
@@ -11,32 +16,62 @@ const dependencies = [
 ];
 let scriptsCount = 0;
 
+const paths = {
+    'css': 'static/css/',
+    'scss': 'app/scss/',
+    'jsx': 'app/jsx/',
+    'js': 'static/scripts/js/'
+}
+
 gulp.task('browser-sync', () =>
   browserSync({
     proxy: {
-      target: 'http://localhost:5000'
+      target: 'http://localhost:3000'
     },
-    port: 5001
+    port: 3001
   }))
 
-gulp.task('scripts', () =>
-    bundleApp(false))
-
-gulp.task('deploy', () =>
-	bundleApp(true))
-
-gulp.task('watch',  () => {
-	gulp.watch(['./app/*.js'], ['scripts']);
-	gulp.watch(['./app/components/*.js'], ['scripts']);
-	gulp.watch(['./templates/*.html'], ['scripts']);
+gulp.task('scss', function() {
+  var processors = [
+      cssnext()
+  ];
+  return gulp.src(paths.scss + '**/*.scss')
+    .pipe(plumber())
+    .pipe(sourcemaps.init())
+    .pipe(sass({
+      outputStyle: 'expanded',
+      includePaths: require('node-reset-scss').includePath
+    }))
+    .on('error', function(err) {
+      console.log(err.message);
+    })
+    .pipe(postcss(processors))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(paths.css))
+    .pipe(browserSync.reload({
+      stream: true
+    }));
 });
 
-gulp.task('default', ['scripts', 'watch', 'browser-sync']);
+
+gulp.task('scripts', () =>
+          bundleApp(false))
+
+gulp.task('deploy', () =>
+	      bundleApp(true))
+
+gulp.task('watch',  () => {
+	gulp.watch([paths.scss + '**/*.scss'], ['scss']);
+	gulp.watch([paths.jsx + '**/*.js'], ['scripts']);
+	gulp.watch(['./templates/**/*.html'], ['scripts']);
+});
+
+gulp.task('default', ['scripts', 'watch', 'browser-sync', 'scss']);
 
 function bundleApp(isProduction) {
 	scriptsCount++;
 	var appBundler = browserify({
-    	entries: './app/app.js',
+    	entries: paths.jsx + 'app.js',
     	debug: true
   	})
 
@@ -48,7 +83,7 @@ function bundleApp(isProduction) {
 			.bundle()
 			.on('error', gutil.log)
 			.pipe(source('vendors.js'))
-			.pipe(gulp.dest('./static/scripts/js/'));
+			.pipe(gulp.dest(paths.js));
   	}
   	if (!isProduction){
   		dependencies.forEach(function(dep){
@@ -61,6 +96,6 @@ function bundleApp(isProduction) {
 	    .bundle()
 	    .on('error',gutil.log)
 	    .pipe(source('bundle.js'))
-	    .pipe(gulp.dest('./static/scripts/js/'))
+	    .pipe(gulp.dest(paths.js))
         .pipe(browserSync.reload({stream: true}));
 }

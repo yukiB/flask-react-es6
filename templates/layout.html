@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="UTF-8">
+	<title>Flask-React-es6-template</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='scripts/js/vendors.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/js/bundle.js') }}"></script>
+  </head>
+  <body>
+    {% block body %}{% endblock %}
+  </body>
+</html>
