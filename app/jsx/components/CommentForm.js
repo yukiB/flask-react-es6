@@ -4,8 +4,8 @@ import ReactDOM from 'react-dom'
 export default class CommentForm extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
-    var author = ReactDOM.findDOMNode(this.refs.author).value.trim();
-    var text = ReactDOM.findDOMNode(this.refs.text).value.trim();
+    let author = ReactDOM.findDOMNode(this.refs.author).value.trim();
+    let text = ReactDOM.findDOMNode(this.refs.text).value.trim();
     if (!text || !author) return;
     this.props.onCommentSubmit({author: author, text: text});
     ReactDOM.findDOMNode(this.refs.author).value = '';

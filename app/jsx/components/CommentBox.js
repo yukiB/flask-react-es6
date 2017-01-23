@@ -1,5 +1,5 @@
 import React from 'react'
-import request from 'superagent'
+import {request} from '../net'
 import CommentList from './CommentList'
 import CommentForm from './CommentForm'
 
@@ -13,31 +13,11 @@ export default class CommentBox extends React.Component {
     }
 
      handleCommentSubmit(comment) {
-        request
-            .post(this.props.url)
-            .query(comment)
-            .end(function(err, res){
-                if (err)
-                    console.error(this.props.url, status, err.toString());
-                else{
-                    let data = JSON.parse(res.text)
-                    this.setState({data: data['data']})
-                }
-            }.bind(this))  
+         request('/data', comment, (data) => this.setState({data: data['data']}));
   }
 
     loadCommentsFromServer() {
-        request
-            .get(this.props.url)
-            .query({})
-            .end(function(err, res){
-                if (err)
-                    console.error(this.props.url, status, err.toString());
-                else{
-                    let data = JSON.parse(res.text)
-                    this.setState({data: data['data']})
-                }
-            }.bind(this))        
+        request('/data', {}, (data) => this.setState({data: data['data']}), 'GET');
     }
 
     componentDidMount() {
