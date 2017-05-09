@@ -10,9 +10,6 @@
 .eggs
 
 # template
-/resources/data/*
-/viewer/node_modules/*
 /static/scripts/js/*
 /static/css/*
 /node_modules/*
-/resources/config/*.json

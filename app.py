@@ -4,6 +4,13 @@ import json
 
 app = Flask(__name__)
 
+
+def create_res(data):
+    response = flask.jsonify(data)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -18,8 +25,9 @@ def data():
     with open('data.json', 'r') as f:
         data = json.load(f)
     if request.method == 'POST':
-        author = request.args.get('author', '')
-        text = request.args.get('text', '')
+        req = request.get_json(force=True)
+        author = req.get('author')
+        text = req.get('text')
         data['data'].append({'author': author, 'text': text})
         print(data)
         with open('data.json', 'w') as f:
